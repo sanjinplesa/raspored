@@ -1,5 +1,5 @@
 import { useState, useMemo } from 'react'
-import { startOfWeek, addWeeks, format, isSameDay, getWeek } from 'date-fns'
+import { startOfWeek, addWeeks, format, isSameDay } from 'date-fns'
 import hr from 'date-fns/locale/hr'
 
 // Podaci za Tjedan A (3., 5. i 7. razredi ujutro)
@@ -35,13 +35,34 @@ function RasporedSati() {
 
   const [today] = useState(new Date())
 
-  // Određivanje koji je tjedan (A ili B)
-  // Tjedan A započinje: 8.9., 22.9., 6.10., 20.10., itd. (parni tjedni)
-  // Tjedan B započinje: 15.9., 29.9., 13.10., 27.10., itd. (neparni tjedni)
+  // Određivanje koji je tjedan (A ili B) na osnovu specifičnih datuma
+  // Tjedan A (3., 5. i 7. razredi) započinje: 8.9., 22.9., 6.10., 20.10., 3.11., 17.11., 1.12., 15.12., 12.1., 26.1., 9.2., 23.2., 9.3., 23.3., 6.4., 20.4., 4.5., 18.5., 1.6.
+  // Tjedan B (4., 6. i 8. razredi) započinje: 15.9., 29.9., 13.10., 27.10., 10.11., 24.11., 8.12., 22.12., 19.1., 2.2., 16.2., 2.3., 16.3., 30.3., 13.4., 27.4., 11.5., 25.5., 8.6.
   const getWeekType = (date) => {
-    const weekNumber = getWeek(date, { weekStartsOn: 1, firstWeekContainsDate: 4, locale: hr })
-    // Parne tjedne = Tjedan A, neparni tjedni = Tjedan B
-    return weekNumber % 2 === 0 ? 'A' : 'B'
+    const weekStart = startOfWeek(date, { weekStartsOn: 1, locale: hr })
+    const year = weekStart.getFullYear()
+    const month = weekStart.getMonth() + 1
+    const day = weekStart.getDate()
+    
+    // Kreiraj funkciju za provjeru datuma
+    const checkDate = (d, m) => {
+      return day === d && month === m
+    }
+    
+    // Provjeri je li početak tjedna u listi Tjedna A (3., 5. i 7. razredi)
+    const isTjedanA = 
+      checkDate(8, 9) || checkDate(22, 9) ||
+      checkDate(6, 10) || checkDate(20, 10) ||
+      checkDate(3, 11) || checkDate(17, 11) ||
+      checkDate(1, 12) || checkDate(15, 12) ||
+      checkDate(12, 1) || checkDate(26, 1) ||
+      checkDate(9, 2) || checkDate(23, 2) ||
+      checkDate(9, 3) || checkDate(23, 3) ||
+      checkDate(6, 4) || checkDate(20, 4) ||
+      checkDate(4, 5) || checkDate(18, 5) ||
+      checkDate(1, 6)
+    
+    return isTjedanA ? 'A' : 'B'
   }
 
   const currentWeekType = useMemo(() => getWeekType(currentWeekStart), [currentWeekStart])
@@ -270,7 +291,7 @@ function RasporedSati() {
       {/* Info */}
       <div className="mt-6 bg-blue-50 border border-blue-200 rounded-xl p-4">
         <p className="text-sm text-blue-900">
-          <strong>Napomena:</strong> Raspored se automatski mijenja između Tjedna A i Tjedna B na osnovu broja tjedna u godini.
+          <strong>Napomena:</strong> Raspored se automatski mijenja između Tjedna A i Tjedna B na osnovu specifičnih datuma početka tjedna.
           {currentWeekType === 'A' && ' Tjedan A: 3., 5. i 7. razredi ujutro'}
           {currentWeekType === 'B' && ' Tjedan B: 4., 6. i 8. razredi ujutro'}
         </p>
