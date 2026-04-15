@@ -238,8 +238,10 @@ function RasporedSati() {
           <button
             onClick={() => navigateWeek(-1)}
             className="px-4 py-2 bg-gray-100 text-gray-700 rounded-lg hover:bg-gray-200 transition-colors font-medium"
+            aria-label="Prethodni tjedan"
           >
-            ← Prethodni tjedan
+            <span className="sm:hidden">←</span>
+            <span className="hidden sm:inline">← Prethodni tjedan</span>
           </button>
           <div className="text-center">
             <div className="text-lg font-semibold text-gray-900">
@@ -252,8 +254,10 @@ function RasporedSati() {
           <button
             onClick={() => navigateWeek(1)}
             className="px-4 py-2 bg-gray-100 text-gray-700 rounded-lg hover:bg-gray-200 transition-colors font-medium"
+            aria-label="Sljedeći tjedan"
           >
-            Sljedeći tjedan →
+            <span className="sm:hidden">→</span>
+            <span className="hidden sm:inline">Sljedeći tjedan →</span>
           </button>
         </div>
       </div>
