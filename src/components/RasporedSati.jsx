@@ -190,6 +190,20 @@ function RasporedSati() {
     })
   }, [currentWeekStart])
 
+  const mobileVisibleDayIndex = useMemo(() => {
+    const todayInCurrentWeekIndex = weekDates.findIndex((date) => isSameDay(date, today))
+    if (todayInCurrentWeekIndex !== -1) {
+      return todayInCurrentWeekIndex
+    }
+
+    const dayOfWeek = today.getDay()
+    if (dayOfWeek >= 1 && dayOfWeek <= 5) {
+      return dayOfWeek - 1
+    }
+
+    return 0
+  }, [today, weekDates])
+
   return (
     <div className="max-w-7xl mx-auto p-4 sm:p-6 lg:p-8">
       {/* Header */}
@@ -249,12 +263,17 @@ function RasporedSati() {
         <div className="overflow-x-auto">
           <table className="w-full table-fixed">
             <colgroup>
-              <col className="w-32" />
-              <col className="w-1/5" />
-              <col className="w-1/5" />
-              <col className="w-1/5" />
-              <col className="w-1/5" />
-              <col className="w-1/5" />
+              <col className="w-28 sm:w-32" />
+              {daniHrvatski.map((dan, index) => (
+                <col
+                  key={dan}
+                  className={
+                    index === mobileVisibleDayIndex
+                      ? 'table-column w-auto sm:w-1/5'
+                      : 'hidden sm:table-column sm:w-1/5'
+                  }
+                />
+              ))}
             </colgroup>
             <thead>
               <tr className="bg-gray-50 border-b border-gray-200">
@@ -268,8 +287,8 @@ function RasporedSati() {
                   return (
                     <th
                       key={dan}
-                      className={`px-4 py-3 text-center text-xs font-semibold text-gray-600 uppercase tracking-wider ${
-                        !isLast ? 'border-r border-gray-300' : ''
+                      className={`${index === mobileVisibleDayIndex ? 'table-cell' : 'hidden sm:table-cell'} px-4 py-3 text-center text-xs font-semibold text-gray-600 uppercase tracking-wider ${
+                        !isLast ? 'sm:border-r border-gray-300' : ''
                       } ${
                         isToday ? 'bg-blue-50 border-l-2 border-r-2 border-blue-500' : ''
                       }`}
@@ -306,8 +325,8 @@ function RasporedSati() {
                       return (
                         <td
                           key={dan}
-                          className={`px-4 py-3 text-center text-sm ${
-                            !isLast ? 'border-r border-gray-300' : ''
+                          className={`${colIndex === mobileVisibleDayIndex ? 'table-cell' : 'hidden sm:table-cell'} px-4 py-3 text-center text-sm ${
+                            !isLast ? 'sm:border-r border-gray-300' : ''
                           } ${
                             isToday ? 'border-l border-r border-blue-200' : ''
                           }`}
@@ -345,4 +364,3 @@ function RasporedSati() {
 }
 
 export default RasporedSati
-
