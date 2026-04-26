@@ -1,6 +1,6 @@
 {
   "$schema": "node_modules/wrangler/config-schema.json",
-  "name": "raspored-sati",
+  "name": "raspored",
   "compatibility_date": "2026-04-26",
   "build": {
     "command": "npm run build"
